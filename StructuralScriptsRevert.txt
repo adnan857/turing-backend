@@ -1,0 +1,6 @@
+
+drop table user_order_products;
+drop table user_orders;
+drop table products;
+drop table product_types;
+drop table users;

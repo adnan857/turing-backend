@@ -1,0 +1,79 @@
+create table `users` (
+  `user_id` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+);
+
+create table `product_types` (
+  `type_id` varchar(25) NOT NULL,
+  `type_desc` varchar(255) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`type_id`)
+);
+
+CREATE TABLE `products` (
+  `sr_no` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` varchar(25) NOT NULL,
+  `type_id` varchar(25) NOT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `product_desc` varchar(255) DEFAULT NULL,
+  `product_price` DECIMAL(6,2) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`sr_no`),
+  UNIQUE KEY `uk_products_product_id` (`product_id`),
+  KEY `fk_products_type_id` (`type_id`),
+  CONSTRAINT `fk_products_type_id` FOREIGN KEY (`type_id`) REFERENCES `product_types` (`type_id`)
+);
+
+CREATE TABLE `user_orders` (
+  `sr_no` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint NOT NULL,
+  `user_id` varchar(25) NOT NULL,
+  `order_status` varchar(25) NOT NULL,
+  `order_amount` DECIMAL(6,2) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`sr_no`),
+  UNIQUE KEY `uk_user_orders_order_id` (`order_id`),
+  KEY `fk_user_orders_user_id` (`user_id`),
+  CONSTRAINT `fk_user_orders_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+);
+
+CREATE TABLE `user_order_products` (
+  `order_id` bigint NOT NULL,
+  `product_id` varchar(25) NOT NULL,
+  `product_price` DECIMAL(6,2) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`order_id`, `product_id`),
+  KEY `fk_user_order_products_order_id` (`order_id`),
+  CONSTRAINT `fk_user_order_products_order_id` FOREIGN KEY (`order_id`) REFERENCES `user_orders` (`order_id`),
+  KEY `fk_user_order_products_product_id` (`product_id`),
+  CONSTRAINT `fk_user_order_products_product_id` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+);
+
+-- Reference Data
+insert into product_types (type_id, type_desc, created_at) values ('type1', 'Type1 Description', now());
+insert into product_types (type_id, type_desc, created_at) values ('type2', 'Type2 Description', now());
+insert into product_types (type_id, type_desc, created_at) values ('type3', 'Type3 Description', now());
+
+insert into products (product_id, type_id, product_name, product_desc, product_price, created_at) 
+values ('prod1', 'type1', 'Product1', 'Product1 Description', 20.50, now());
+insert into products (product_id, type_id, product_name, product_desc, product_price, created_at) 
+values ('prod2', 'type1', 'Product2', 'Product2 Description', 25.00, now());
+insert into products (product_id, type_id, product_name, product_desc, product_price, created_at) 
+values ('prod3', 'type2', 'Product3', 'Product3 Description', 31.25, now());
+insert into products (product_id, type_id, product_name, product_desc, product_price, created_at) 
+values ('prod4', 'type2', 'Product4', 'Product3 Description', 50.50, now());
+insert into products (product_id, type_id, product_name, product_desc, product_price, created_at) 
+values ('prod5', 'type3', 'Product5', 'Product4 Description', 3.50, now());
+insert into products (product_id, type_id, product_name, product_desc, product_price, created_at) 
+values ('prod6', 'type3', 'Product6', 'Product4 Description', 15.00, now());
